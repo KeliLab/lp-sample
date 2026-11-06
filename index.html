@@ -6,6 +6,8 @@
 <title>ほぐし処 こもれび（見本サイト）</title>
 <meta name="description" content="予約・料金の目安・問い合わせ通知が付いた、小さなお店のサイトの見本です（架空のお店）。">
 <meta name="robots" content="noindex">
+<!-- 外部のプログラムや画像を読み込ませない設定（このページの中のコードだけ動く）。中身を変えたら hash を作り直す -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'sha256-TDdTJiyyBuziydk++8tfSyU46clZd4hjAiitAIufinI='; script-src 'sha256-+utNObhf3cO7Jy5iGiU7adUzq080OlY+X9E1+06H8yo='; img-src 'self' data:; base-uri 'none'; form-action 'none'">
 <style>
   :root {
     --bg: #FBF8F3;
@@ -68,6 +70,9 @@
   dl.info dt { color: var(--sub); }
   footer { text-align: center; font-size: 12px; color: var(--sub); padding: 24px 16px 40px; border-top: 1px solid var(--line); }
   footer a { color: var(--accent); }
+  .gap-top { margin-top: 14px; }
+  .no-top { margin-top: 0; }
+  .full-row { grid-column: 1 / -1; }
   @media (max-width: 420px) {
     .hero h1 { font-size: 26px; }
     .slots { grid-template-columns: repeat(3, 1fr); }
@@ -97,7 +102,7 @@
     <p class="lead">コースとオプションを選ぶと、合計とかかる時間がすぐに分かります。</p>
     <div class="card">
       <div id="courses"></div>
-      <p class="note" style="margin-top:14px">オプション（いくつでも）</p>
+      <p class="note gap-top">オプション（いくつでも）</p>
       <div id="options"></div>
       <div class="total">
         <span>合計 <span id="mins"></span></span>
@@ -111,7 +116,7 @@
     <h2>予約</h2>
     <p class="lead">日にちと時間を選んでください。埋まっている時間は選べません。</p>
     <div class="card">
-      <p class="note" style="margin-top:0">選んでいる内容：<span id="picked"></span></p>
+      <p class="note no-top">選んでいる内容：<span id="picked"></span></p>
       <div class="days" id="days"></div>
       <div class="slots" id="slots"></div>
       <label class="field">お名前<input id="rname" autocomplete="off" placeholder="例：山田 花子"></label>
@@ -208,7 +213,7 @@
     document.querySelectorAll('.day').forEach((b) => b.addEventListener('click', () => { state.day = Number(b.dataset.i); state.slot = null; renderDays(); renderSlots(); }));
   }
   function renderSlots() {
-    if (state.day === null) { $('slots').innerHTML = '<p class="note" style="grid-column:1/-1">日にちを選ぶと、空いている時間が出ます。</p>'; return; }
+    if (state.day === null) { $('slots').innerHTML = '<p class="note full-row">日にちを選ぶと、空いている時間が出ます。</p>'; return; }
     const list = slotsOf(days[state.day], picked().min);
     $('slots').innerHTML = list.map((s) => `<button class="slot" data-h="${s.h}" ${s.free ? '' : 'disabled'} aria-pressed="${state.slot === s.h}">${s.h}:00</button>`).join('');
     document.querySelectorAll('.slot').forEach((b) => b.addEventListener('click', () => { state.slot = Number(b.dataset.h); renderSlots(); }));
