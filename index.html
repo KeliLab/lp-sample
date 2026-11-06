@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ほぐし処 こもれび（見本サイト）</title>
+<meta name="description" content="予約・料金の目安・問い合わせ通知が付いた、小さなお店のサイトの見本です（架空のお店）。">
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --bg: #FBF8F3;
+    --card: #FFFFFF;
+    --ink: #3E3A35;
+    --sub: #7A7268;
+    --line: #E8E1D6;
+    --accent: #5E8C6A;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #E7F0E9;
+    --warn: #B5532E;
+    --chat: #06C755;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif; line-height: 1.7; }
+  .demo-bar { background: #3E3A35; color: #fff; font-size: 13px; text-align: center; padding: 8px 16px; }
+  .demo-bar b { color: #FFD98A; }
+  header.hero { padding: 48px 16px 40px; text-align: center; background: linear-gradient(180deg, #E7F0E9 0%, var(--bg) 100%); }
+  .hero h1 { margin: 0; font-size: 30px; letter-spacing: .08em; }
+  .hero p { margin: 10px auto 0; max-width: 520px; color: var(--sub); }
+  .hero .cta { display: inline-block; margin-top: 22px; }
+  nav.jump { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+  nav.jump a { font-size: 13px; color: var(--accent); text-decoration: none; border: 1px solid var(--accent); border-radius: 999px; padding: 4px 12px; background: #fff; }
+  main { max-width: 720px; margin: 0 auto; padding: 0 16px 64px; }
+  section { margin-top: 40px; }
+  h2 { font-size: 21px; margin: 0 0 4px; }
+  .lead { color: var(--sub); margin: 0 0 16px; font-size: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+  .btn { appearance: none; border: 0; border-radius: 999px; padding: 12px 24px; font-size: 16px; font-weight: 700; background: var(--accent); color: var(--accent-ink); cursor: pointer; text-decoration: none; }
+  .btn:disabled { opacity: .4; cursor: default; }
+  .btn.sub { background: #EEE8DE; color: var(--ink); }
+  label.opt { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
+  label.opt:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+  label.opt .price { margin-left: auto; font-weight: 700; white-space: nowrap; }
+  .total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line); }
+  .total strong { font-size: 26px; color: var(--accent); }
+  .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .day { border: 1px solid var(--line); border-radius: 12px; padding: 8px 0; text-align: center; background: #fff; cursor: pointer; font-size: 13px; line-height: 1.3; }
+  .day b { display: block; font-size: 17px; }
+  .day[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  .day:disabled { color: #BBB; background: #F5F2EC; cursor: default; }
+  .slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
+  .slot { border: 1px solid var(--line); border-radius: 10px; padding: 8px 0; background: #fff; cursor: pointer; font-size: 14px; }
+  .slot[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .slot:disabled { text-decoration: line-through; color: #BBB; background: #F5F2EC; cursor: default; }
+  .field { display: block; margin-top: 12px; font-size: 14px; }
+  .field input, .field textarea, .field select { display: block; width: 100%; margin-top: 4px; padding: 10px 12px; font-size: 16px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); font-family: inherit; }
+  .note { font-size: 12px; color: var(--sub); margin-top: 8px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .done { display: none; margin-top: 16px; }
+  .done.show { display: block; }
+  .phone { margin-top: 12px; max-width: 340px; border-radius: 22px; background: #8CABD8; padding: 14px; }
+  .phone .head { color: #fff; font-size: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .phone .head i { display: inline-block; width: 18px; height: 18px; border-radius: 5px; background: var(--chat); }
+  .bubble { background: #fff; border-radius: 16px; padding: 10px 12px; font-size: 13px; white-space: pre-line; line-height: 1.6; }
+  .ok { color: var(--accent); font-weight: 700; }
+  .err { color: var(--warn); font-size: 13px; margin-top: 8px; min-height: 1em; }
+  dl.info { display: grid; grid-template-columns: 6em 1fr; gap: 6px 12px; margin: 0; font-size: 14px; }
+  dl.info dt { color: var(--sub); }
+  footer { text-align: center; font-size: 12px; color: var(--sub); padding: 24px 16px 40px; border-top: 1px solid var(--line); }
+  footer a { color: var(--accent); }
+  @media (max-width: 420px) {
+    .hero h1 { font-size: 26px; }
+    .slots { grid-template-columns: repeat(3, 1fr); }
+    .day { font-size: 11px; }
+    .day b { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+<div class="demo-bar">これは <b>見本サイト</b> です。お店は架空で、予約やお問い合わせを送っても、どこにも届きません。</div>
+
+<header class="hero">
+  <h1>ほぐし処 こもれび</h1>
+  <p>駅から歩いて3分の、小さなもみほぐしのお店です。<br>空いている時間を見て、そのまま予約できます。</p>
+  <a class="btn cta" href="#reserve">空き時間を見る</a>
+  <nav class="jump">
+    <a href="#price">料金の目安</a>
+    <a href="#reserve">予約</a>
+    <a href="#contact">お問い合わせ</a>
+    <a href="#info">お店の情報</a>
+  </nav>
+</header>
+
+<main>
+  <section id="price">
+    <h2>料金の目安</h2>
+    <p class="lead">コースとオプションを選ぶと、合計とかかる時間がすぐに分かります。</p>
+    <div class="card">
+      <div id="courses"></div>
+      <p class="note" style="margin-top:14px">オプション（いくつでも）</p>
+      <div id="options"></div>
+      <div class="total">
+        <span>合計 <span id="mins"></span></span>
+        <strong id="sum"></strong>
+      </div>
+      <div class="row"><a class="btn" href="#reserve">この内容で予約する</a></div>
+    </div>
+  </section>
+
+  <section id="reserve">
+    <h2>予約</h2>
+    <p class="lead">日にちと時間を選んでください。埋まっている時間は選べません。</p>
+    <div class="card">
+      <p class="note" style="margin-top:0">選んでいる内容：<span id="picked"></span></p>
+      <div class="days" id="days"></div>
+      <div class="slots" id="slots"></div>
+      <label class="field">お名前<input id="rname" autocomplete="off" placeholder="例：山田 花子"></label>
+      <label class="field">電話番号<input id="rtel" inputmode="tel" autocomplete="off" placeholder="例：090-0000-0000"></label>
+      <div class="err" id="rerr"></div>
+      <div class="row"><button class="btn" id="rsend">予約する</button></div>
+      <div class="done" id="rdone">
+        <p class="ok">予約を受け付けました（見本なので、実際には送られていません）</p>
+        <p class="note">本番では、同じ時間に同時に予約が入らないようにし、お店のスマホにすぐ知らせます。下は、お店に届く通知の例です。</p>
+        <div class="phone"><div class="head"><i></i>お店のスマホに届く通知</div><div class="bubble" id="rmsg"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>お問い合わせ</h2>
+    <p class="lead">気になることがあれば、気軽にどうぞ。</p>
+    <div class="card">
+      <label class="field">お名前<input id="cname" autocomplete="off"></label>
+      <label class="field">ご用件
+        <select id="ctype"><option>コースについて</option><option>予約の変更・キャンセル</option><option>その他</option></select>
+      </label>
+      <label class="field">内容<textarea id="cbody" rows="4"></textarea></label>
+      <div class="err" id="cerr"></div>
+      <div class="row"><button class="btn" id="csend">送る</button></div>
+      <div class="done" id="cdone">
+        <p class="ok">送りました（見本なので、実際には送られていません）</p>
+        <div class="phone"><div class="head"><i></i>お店のスマホに届く通知</div><div class="bubble" id="cmsg"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="info">
+    <h2>お店の情報</h2>
+    <div class="card">
+      <dl class="info">
+        <dt>営業時間</dt><dd>10:00〜19:00（最終受付 18:00）</dd>
+        <dt>お休み</dt><dd>火曜日</dd>
+        <dt>場所</dt><dd>〇〇駅 東口から歩いて3分（架空の住所です）</dd>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<footer>
+  見本サイト：<a href="#">Keli Lab</a>（予約・料金の目安・問い合わせ通知付きの、小さなお店のサイトを作ります）
+</footer>
+
+<script>
+  const COURSES = [
+    { id: 'c30', name: 'もみほぐし 30分', min: 30, yen: 3300 },
+    { id: 'c60', name: 'もみほぐし 60分', min: 60, yen: 5980 },
+    { id: 'c90', name: 'もみほぐし 90分', min: 90, yen: 8500 },
+  ];
+  const OPTIONS = [
+    { id: 'foot', name: '足つぼ 15分', min: 15, yen: 1500 },
+    { id: 'head', name: 'ヘッドスパ 15分', min: 15, yen: 1800 },
+    { id: 'hot', name: 'ホットストーン', min: 0, yen: 800 },
+  ];
+  const HOLIDAY = 2; // 火曜日
+  const yen = (n) => '¥' + n.toLocaleString('ja-JP');
+  const $ = (id) => document.getElementById(id);
+  const state = { course: 'c60', options: new Set(), day: null, slot: null };
+
+  const radio = (c) => `<label class="opt"><input type="radio" name="course" value="${c.id}" ${c.id === state.course ? 'checked' : ''}>${c.name}<span class="price">${yen(c.yen)}</span></label>`;
+  const check = (o) => `<label class="opt"><input type="checkbox" value="${o.id}">${o.name}<span class="price">+${yen(o.yen)}</span></label>`;
+  $('courses').innerHTML = COURSES.map(radio).join('');
+  $('options').innerHTML = OPTIONS.map(check).join('');
+  document.querySelectorAll('input[name=course]').forEach((el) => el.addEventListener('change', () => { state.course = el.value; update(); }));
+  document.querySelectorAll('#options input').forEach((el) => el.addEventListener('change', () => { el.checked ? state.options.add(el.value) : state.options.delete(el.value); update(); }));
+
+  const picked = () => {
+    const c = COURSES.find((x) => x.id === state.course);
+    const os = OPTIONS.filter((o) => state.options.has(o.id));
+    return { c, os, min: c.min + os.reduce((a, o) => a + o.min, 0), yen: c.yen + os.reduce((a, o) => a + o.yen, 0) };
+  };
+
+  // 埋まっている時間は、日にちから決まった形で作る（見本なので毎回同じに見えるように）
+  const days = Array.from({ length: 7 }, (_, i) => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + i + 1); return d; });
+  const W = ['日', '月', '火', '水', '木', '金', '土'];
+  const busy = (d, h) => ((d.getDate() * 7 + h * 3) % 5 === 0) || ((d.getDate() + h) % 7 === 0);
+  const slotsOf = (d, need) => {
+    const out = [];
+    for (let h = 10; h <= 18; h++) {
+      const span = Math.ceil(need / 60);
+      const free = Array.from({ length: span }, (_, k) => h + k <= 18 && !busy(d, h + k)).every(Boolean);
+      out.push({ h, free });
+    }
+    return out;
+  };
+
+  function renderDays() {
+    $('days').innerHTML = days.map((d, i) => `<button class="day" data-i="${i}" ${d.getDay() === HOLIDAY ? 'disabled' : ''} aria-pressed="${state.day === i}">${d.getMonth() + 1}/${'<b>' + d.getDate() + '</b>'}${W[d.getDay()]}${d.getDay() === HOLIDAY ? '休' : ''}</button>`).join('');
+    document.querySelectorAll('.day').forEach((b) => b.addEventListener('click', () => { state.day = Number(b.dataset.i); state.slot = null; renderDays(); renderSlots(); }));
+  }
+  function renderSlots() {
+    if (state.day === null) { $('slots').innerHTML = '<p class="note" style="grid-column:1/-1">日にちを選ぶと、空いている時間が出ます。</p>'; return; }
+    const list = slotsOf(days[state.day], picked().min);
+    $('slots').innerHTML = list.map((s) => `<button class="slot" data-h="${s.h}" ${s.free ? '' : 'disabled'} aria-pressed="${state.slot === s.h}">${s.h}:00</button>`).join('');
+    document.querySelectorAll('.slot').forEach((b) => b.addEventListener('click', () => { state.slot = Number(b.dataset.h); renderSlots(); }));
+  }
+  function update() {
+    const p = picked();
+    $('sum').textContent = yen(p.yen);
+    $('mins').textContent = `（${p.min}分）`;
+    $('picked').textContent = [p.c.name, ...p.os.map((o) => o.name)].join('＋') + `　${yen(p.yen)}`;
+    if (state.slot !== null && !slotsOf(days[state.day], p.min).find((s) => s.h === state.slot)?.free) state.slot = null;
+    renderSlots();
+  }
+
+  $('rsend').addEventListener('click', () => {
+    const name = $('rname').value.trim();
+    const tel = $('rtel').value.trim();
+    $('rerr').textContent = state.day === null || state.slot === null ? '日にちと時間を選んでください' : !name ? 'お名前を入れてください' : !tel ? '電話番号を入れてください' : '';
+    if ($('rerr').textContent) return;
+    const d = days[state.day];
+    const p = picked();
+    $('rmsg').textContent = `【新しい予約】\n${d.getMonth() + 1}月${d.getDate()}日（${W[d.getDay()]}）${state.slot}:00〜\n${[p.c.name, ...p.os.map((o) => o.name)].join('＋')}\n${yen(p.yen)}（${p.min}分）\n${name} 様　${tel}`;
+    $('rdone').classList.add('show');
+    $('rdone').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+  $('csend').addEventListener('click', () => {
+    const name = $('cname').value.trim();
+    const body = $('cbody').value.trim();
+    $('cerr').textContent = !name ? 'お名前を入れてください' : !body ? '内容を入れてください' : '';
+    if ($('cerr').textContent) return;
+    $('cmsg').textContent = `【お問い合わせ】${$('ctype').value}\n${name} 様\n${body}`;
+    $('cdone').classList.add('show');
+  });
+
+  renderDays();
+  update();
+</script>
+</body>
+</html>
